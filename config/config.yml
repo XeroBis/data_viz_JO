@@ -1,0 +1,8 @@
+CONTINENT : ["ASIE", "EUROPE", "AFRIQUE", "OCÉANIE", "AMÉRIQUE"]
+
+ASIE : ['AFG', 'ARM', 'AZE', 'BRN', 'CHN', 'CYP', 'GEO', 'HKG', 'IND', 'IRQ', 'ISR', 'JOR', 'JPN', 'KAZ', 'KGZ', 'KOR', 'LAO', 'MDV', 'PAK', 'PRK', 'QAT', 'SYR', 'THA', 'TJK', 'TKM', 'TLS', 'UZB', 'VNM', 'YEM'] 
+EUROPE : ['ALB', 'AND', 'AUT', 'BEL', 'BIH', 'BLR', 'CZE', 'ESP', 'EST', 'FIN', 'FRA', 'GBR', 'HUN', 'IRL', 'ISL', 'ITA', 'LIE', 'LTU', 'LUX', 'MDA', 'MKD', 'MLT', 'MNE', 'NOR', 'POL', 'ROU', 'RUS', 'SMR', 'SRB', 'SVK', 'SWE', 'UKR', 'TUR'] 
+AFRIQUE : ['BDI', 'BEN', 'CAF', 'CIV', 'CMR', 'COD', 'COM', 'CPV', 'DJI', 'EGY', 'ERI', 'ETH', 'GAB', 'GHA', 'KEN', 'LBR', 'MAR', 'MLI', 'MOZ', 'NAM', 'RWA', 'SEN', 'SLE', 'SOM', 'SSD', 'STP', 'SWZ', 'TUN', 'UGA'] 
+OCÉANIE : ['AUS', 'COK', 'FSM', 'GUM', 'KIR', 'MHL', 'NRU', 'NZL', 'PLW', 'PNG', 'TUV'] 
+AMÉRIQUE : ['ARG', 'BOL', 'BRA', 'CAN', 'COL', 'CUB', 'DMA', 'DOM', 'ECU', 'GUY', 'JAM', 'LCA', 'MEX', 'PAN', 'PER', 'SUR', 'TTO', 'USA', 'VEN']
+
