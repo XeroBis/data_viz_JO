@@ -51,10 +51,20 @@ def section_principale():
                 id="div_graph_repartition_homme_femme"
             ),
             html.Div(
+                dcc.Graph(figure=jo_instance.get_fig_world(),
+                          config={'displayModeBar': False}),
+                id="div_graph_world"
+            ),
+            html.Div(
                 dcc.Graph(figure=jo_instance.get_fig_medals(),
                           config={'displayModeBar': False}),
                 id="div_graph_medals"
-            )
+            ),
+            html.Div(
+                dcc.Graph(figure=jo_instance.get_fig_top_3(),
+                          config={'displayModeBar': False}),
+                id="div_graph_top_3"
+            ),
         ], id="section_graph"
     )
     return section
@@ -69,6 +79,8 @@ layout = html.Div([
 @callback(
     Output("div_graph_repartition_homme_femme", "children"),
     Output("div_graph_medals", "children"),
+    Output("div_graph_world","children"),
+    Output("div_graph_top_3", "children"),
     Output("dropdown_pays", "options"),
     Input("dropdown_continent", "value"),
     Input("dropdown_pays", "value"),
@@ -78,8 +90,9 @@ def update_graphs(continent, pays, years):
     print("change graph, continent:", continent,
           ", pays :", pays, ", years : ", years)
     
-
     graph_repart_h_f = dcc.Graph(figure=jo_instance.get_repartitition_homme_femme(years=years, country=pays, continent=continent), config={'displayModeBar': False})
     l_country = jo_instance.get_list_country(years, continent)
     graph_medals = dcc.Graph(figure=jo_instance.get_fig_medals(years, pays, continent), config={'displayModeBar': False})
-    return graph_repart_h_f, graph_medals, l_country
+    graph_world = dcc.Graph(figure=jo_instance.get_fig_world(years, pays, continent))
+    graph_top3 = dcc.Graph(figure=jo_instance.get_fig_top_3(years, continent))
+    return graph_repart_h_f, graph_medals, graph_world, graph_top3, l_country

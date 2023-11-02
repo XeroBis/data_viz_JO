@@ -1,0 +1,5 @@
+dash_bootstrap_components==1.5.0
+dash==2.14.1
+pandas==2.1.2
+PyYAML==6.0.1
+nbformat==5.9.2

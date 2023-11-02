@@ -77,10 +77,29 @@
 
 /* GRAPHS */
 #section_graph {
-    display: flex;
+    display: grid;
     position: absolute;
     top: 30%;
-    width: 100%;
+
+    grid-auto-columns: minmax(0, 1fr);
+    grid-auto-flow: column;
 }
 
-
+#div_graph_repartition_homme_femme {
+    grid-row: 1;
+    grid-column: 1;
+}
+#div_graph_world {
+    padding-top: 10%;
+    grid-row: 1;
+    grid-column-start: 2;
+    grid-column-end: 4;
+}
+#div_graph_medals {
+    grid-row: 1;
+    grid-column: 4;
+}
+#div_graph_top_3 {
+    grid-row: 2;
+    grid-column: 4;
+}
