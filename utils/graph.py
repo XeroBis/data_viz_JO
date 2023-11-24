@@ -64,27 +64,28 @@ class JO:
     def get_noc_of_country(self, country):
         noc = self.regions.loc[self.regions["region"] == country, "NOC"]
         return noc.iloc[0]
-    
+
     def get_noc_of_list_country(self, countries):
         noc = []
         for country in countries:
             noc.append(self.get_noc_of_country(country))
         return noc
-    
+
     def get_region_of_noc(self, noc):
-        
+
         pass
 
     def get_region_of_list_noc(self, nocs):
         regions = []
-        for noc in nocs:  
-            regions.append(self.regions.loc[self.regions['NOC'] == noc, 'region'].item())
+        for noc in nocs:
+            regions.append(
+                self.regions.loc[self.regions['NOC'] == noc, 'region'].item())
         return regions
-    
+
     def get_liste_region(self, years=None, pays=None, continent=None):
         if pays is None:
             l_country = self.get_list_country(years, continent)
-            
+
         else:
             l_country = [pays]
         l_noc = self.get_noc_of_list_country(l_country)
@@ -164,15 +165,15 @@ class JO:
             medals = Counter(self.get_medals(years))
         fig = go.Figure(
             data=go.Bar(
-                x=["Or", "Argent", "Bronze"], 
-                y=[medals["Or"], medals["Argent"], medals["Bronze"]], 
+                x=["Or", "Argent", "Bronze"],
+                y=[medals["Or"], medals["Argent"], medals["Bronze"]],
                 marker=dict(color=["#FFD700", "#C0C0C0", "#614e1a"])
             )
         )
 
         fig.update_layout(
             barmode='stack',
-            xaxis_title="Types de médailles", yaxis_title="Nombre de médailles",
+            xaxis_title="Nombre de médailles",
             title="",
             showlegend=False
         )
@@ -182,23 +183,23 @@ class JO:
         list_region = self.get_liste_region(years, pays, continent)
         fig = go.Figure(go.Scattergeo())
         fig.update_geos(projection_type="natural earth", showcountries=True)
-        fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
+        fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
         fig.add_traces(
             go.Choropleth(
                 locations=list_region,
                 locationmode="country names",
-                z = [i for i in range(1, len(list_region)+1)],
+                z=[i for i in range(1, len(list_region)+1)],
                 colorbar=None,
-                showscale = False
+                showscale=False
             )
         )
         return fig
-    
+
     def get_fig_top_3(self, years=None, continent=None):
         res = {
-            "1":{"country":"", "Or":0, "Argent":0, "Bronze":0},
-            "2":{"country":"", "Or":0, "Argent":0, "Bronze":0},
-            "3":{"country":"", "Or":0, "Argent":0, "Bronze":0}
+            "1": {"country": "", "Or": 0, "Argent": 0, "Bronze": 0},
+            "2": {"country": "", "Or": 0, "Argent": 0, "Bronze": 0},
+            "3": {"country": "", "Or": 0, "Argent": 0, "Bronze": 0}
         }
         l_country = self.get_list_country(years, continent)
         l_nocs = self.get_noc_of_list_country(l_country)
@@ -209,7 +210,7 @@ class JO:
             medals = self.get_medals(years, noc)
             if medals["Or"] >= res["1"]["Or"]:
                 id_to_change = 1
-                check_argent = medals["Or"] == res["1"]["Or"] 
+                check_argent = medals["Or"] == res["1"]["Or"]
             elif medals["Or"] >= res["2"]["Or"]:
                 id_to_change = 2
                 check_argent = medals["Or"] == res["2"]["Or"]
@@ -217,63 +218,71 @@ class JO:
             elif medals["Or"] >= res["3"]["Or"]:
                 id_to_change = 3
                 check_argent = medals["Or"] == res["3"]["Or"]
-            
-            if check_argent :
+
+            if check_argent:
                 if medals["Argent"] >= res[str(id_to_change)]["Argent"]:
-                    check_bronze = medals["Argent"] == res[str(id_to_change)]["Argent"]
-            
+                    check_bronze = medals["Argent"] == res[str(
+                        id_to_change)]["Argent"]
+
             if check_bronze:
                 if medals["Bronze"] < res[str(id_to_change)]["Bronze"]:
                     id_to_change = id_to_change+1
 
             if id_to_change == 1:
-                res["3"] = res["2"] 
+                res["3"] = res["2"]
                 res["2"] = res["1"]
                 res["1"] = {
-                    "country":self.get_country_of_noc(noc), 
-                    "Or":medals["Or"],
-                    "Argent":medals["Argent"],
-                    "Bronze":medals["Bronze"]
+                    "country": self.get_country_of_noc(noc),
+                    "Or": medals["Or"],
+                    "Argent": medals["Argent"],
+                    "Bronze": medals["Bronze"]
                 }
-                
-                
+
             if id_to_change == 2:
                 res["3"] = res["2"]
                 res["2"] = {
-                    "country":self.get_country_of_noc(noc), 
-                    "Or":medals["Or"],
-                    "Argent":medals["Argent"],
-                    "Bronze":medals["Bronze"]
+                    "country": self.get_country_of_noc(noc),
+                    "Or": medals["Or"],
+                    "Argent": medals["Argent"],
+                    "Bronze": medals["Bronze"]
                 }
-                
+
             if id_to_change == 3:
                 res["3"] = {
-                    "country":self.get_country_of_noc(noc), 
-                    "Or":medals["Or"],
-                    "Argent":medals["Argent"],
-                    "Bronze":medals["Bronze"]
+                    "country": self.get_country_of_noc(noc),
+                    "Or": medals["Or"],
+                    "Argent": medals["Argent"],
+                    "Bronze": medals["Bronze"]
                 }
 
         bars = []
+        # marker=dict(color=["#", "#C0C0C0", "#614e1a"])
+        colors = {
+            'Or': '#FFD700',
+            'Argent': '#C0C0C0',
+            'Bronze': '#614e1a'}
         bars.append(
             go.Bar(
-                name="Médailles d'Or", 
+                name="Or",
                 x=[res["1"]["country"], res["2"]["country"], res["3"]["country"]],
                 y=[res["1"]["Or"], res["3"]["Or"], res["3"]["Or"]],
+                marker_color=colors["Or"]
             )
         )
         bars.append(
             go.Bar(
-                name="Médailles d'Argent", 
+                name="Argent",
                 x=[res["1"]["country"], res["2"]["country"], res["3"]["country"]],
                 y=[res["1"]["Argent"], res["2"]["Argent"], res["3"]["Argent"]],
+                marker_color=colors["Argent"]
             )
         )
         bars.append(
             go.Bar(
-                name="Médailles de Bronze", 
+                name="Bronze",
                 x=[res["1"]["country"], res["2"]["country"], res["3"]["country"]],
                 y=[res["1"]["Bronze"], res["2"]["Bronze"], res["3"]["Bronze"]],
+                marker_color=colors["Bronze"]
             )
         )
         fig = go.Figure(data=bars)
@@ -285,3 +294,6 @@ class JO:
             showlegend=False
         )
         return fig
+
+
+    
