@@ -92,6 +92,12 @@ class JO:
         l_region = self.get_region_of_list_noc(l_noc)
         return l_region
 
+    def get_number_participant(self, noc=None):
+        data = self.data
+        data = data.groupby("NOC").agg({"ID":"count"})
+        data = data[data["NOC"] == noc]
+        pass
+
     #################
     ##### GRAPH #####
     #################
@@ -295,5 +301,7 @@ class JO:
         )
         return fig
 
-
-    
+    def get_fig_participants(self, years=None, continent=None):
+        l_country = self.get_list_country(years, continent)
+        l_nocs = self.get_noc_of_list_country(l_country)
+        

@@ -1,8 +1,8 @@
 CONTINENT : ["ASIE", "EUROPE", "AFRIQUE", "OCÉANIE", "AMÉRIQUE"]
 
-ASIE : ['AFG', 'ARM', 'AZE', 'BRN', 'CHN', 'CYP', 'GEO', 'HKG', 'IND', 'IRQ', 'ISR', 'JOR', 'JPN', 'KAZ', 'KGZ', 'KOR', 'LAO', 'MDV', 'PAK', 'PRK', 'QAT', 'SYR', 'THA', 'TJK', 'TKM', 'TLS', 'UZB', 'VNM', 'YEM'] 
-EUROPE : ['ALB', 'AND', 'AUT', 'BEL', 'BIH', 'BLR', 'CZE', 'ESP', 'EST', 'FIN', 'FRA', 'GBR', 'HUN', 'IRL', 'ISL', 'ITA', 'LIE', 'LTU', 'LUX', 'MDA', 'MKD', 'MLT', 'MNE', 'NOR', 'POL', 'ROU', 'RUS', 'SMR', 'SRB', 'SVK', 'SWE', 'UKR', 'TUR'] 
-AFRIQUE : ['BDI', 'BEN', 'CAF', 'CIV', 'CMR', 'COD', 'COM', 'CPV', 'DJI', 'EGY', 'ERI', 'ETH', 'GAB', 'GHA', 'KEN', 'LBR', 'MAR', 'MLI', 'MOZ', 'NAM', 'RWA', 'SEN', 'SLE', 'SOM', 'SSD', 'STP', 'SWZ', 'TUN', 'UGA'] 
-OCÉANIE : ['AUS', 'COK', 'FSM', 'GUM', 'KIR', 'MHL', 'NRU', 'NZL', 'PLW', 'PNG', 'TUV'] 
-AMÉRIQUE : ['ARG', 'BOL', 'BRA', 'CAN', 'COL', 'CUB', 'DMA', 'DOM', 'ECU', 'GUY', 'JAM', 'LCA', 'MEX', 'PAN', 'PER', 'SUR', 'TTO', 'USA', 'VEN']
+ASIE : ['AFG', 'ARM', 'AZE', 'BRN', 'CHN', 'CYP', 'GEO', 'HKG', 'IND', 'IRQ', 'ISR', 'JOR', 'JPN', 'KAZ', 'KGZ', 'KOR', 'LAO', 'MDV', 'MGL', 'OMA', 'PAK', 'PHI', 'PRK', 'QAT', 'SYR', 'THA', 'TJK', 'TKM', 'TLS', 'UZB', 'VNM', 'YEM', 'UAE', 'KSA', 'IRI', 'NEP', 'BHU', 'BAN', 'MYA', 'VIE', 'CAM', 'MAS', 'INA'] 
+EUROPE : ['ALB', 'AND', 'AUT', 'BEL', 'BIH', 'BLR', 'BUL', 'CRO', 'CZE', 'DEN', 'ESP', 'EST', 'FIN', 'FRA', 'GER', 'GBR', 'GRE', 'HUN', 'IRL', 'ISL', 'ITA', 'KOS', 'LAT', 'LIE', 'LTU', 'LUX', 'MDA', 'MKD', 'MLT', 'MNE', 'NED', 'NOR', 'POL', 'POR', 'ROU', 'RUS', 'SLO', 'SMR', 'SRB', 'SUI', 'SVK', 'SWE', 'UKR', 'TOG', 'TUR'] 
+AFRIQUE : ['ALG', 'ANG', 'BDI', 'BUR', 'BEN', 'BOT', 'CAF', 'CHA', 'CIV', 'CMR', 'COD', 'CGO', 'COM', 'CPV', 'DJI', 'EGY', 'ERI', 'ETH', 'GAB', 'GAM', 'GEQ', 'GUI', 'GHA', 'KEN', 'LBA', 'LBR', 'LES', 'MAD', 'MAW', 'MAR', 'MLI', 'MOZ', 'MTN', 'NAM', 'NGR', 'NIG','RWA', 'RSA', 'SEN', 'SLE', 'SOM', 'SSD', 'SUD', 'STP', 'SWZ', 'TAN', 'TUN', 'UGA', 'ZAM', 'ZIM'] 
+OCÉANIE : ['AUS', 'COK', 'FSM', 'GUM', 'KIR', 'MHL', 'NRU', 'NZL', 'PLW', 'PNG', 'TUV', 'FIJ'] 
+AMÉRIQUE : ['ASA', 'ARG', 'BOL', 'BRA', 'CAN', 'COL', 'CUB', 'DMA', 'DOM', 'ECU', 'GUY', 'JAM', 'LCA', 'MEX', 'PAN', 'PER', 'SUR', 'TTO', 'USA', 'VEN', 'GUA', 'BIZ', 'ESA', 'HON', 'NCA', 'CRC', 'HAI', 'BAH', 'PUR', 'CHI', 'URU', 'PAR']
 
