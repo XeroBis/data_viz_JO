@@ -92,11 +92,19 @@ class JO:
         l_region = self.get_region_of_list_noc(l_noc)
         return l_region
 
-    def get_number_participant(self, noc=None):
+    def get_number_participant(self, years=None, noc=None):
         data = self.data
-        data = data.groupby("NOC").agg({"ID":"count"})
-        data = data[data["NOC"] == noc]
-        pass
+        particpant = 0
+        if noc is not None:
+            data = data[data["NOC"] == noc]
+        if years is not None:
+            for year in years:
+                data_temp = data[data["Year"] == year]
+                particpant += len(data_temp["Name"].unique())
+        else:
+            return len(data["Name"].unique())
+
+        return particpant
 
     #################
     ##### GRAPH #####
@@ -122,12 +130,40 @@ class JO:
                     100*nb_man/(max(nb_man+nb_woman, 1))]))
         bars.append(go.Bar(name="% of women", x=["Femme"], y=[
                     100*nb_woman/(max(nb_man+nb_woman, 1))]))
+        labels = ["Homme", "Femmes"]
+        values = [100*nb_man/(max(nb_man+nb_woman, 1)),
+                  100*nb_woman/(max(nb_man+nb_woman, 1))]
+
+        fig = go.Figure(data=[go.Pie(labels=labels, values=values)])
+
+        fig.update_layout(
+            title="Répartition Homme Femme",
+        )
+        return fig
+
+    def get_fig_participants_homme_femme(self, years=None, country=None, continent=None):
+        nb_man = 0
+        nb_woman = 0
+        if years is not None:
+            if years[0] == years[1]:
+                tab_years = [years[0]]
+            else:
+                tab_years = range(years[0], years[1]+4, 4)
+        else:
+            tab_years = range(1896, 2020, 4)
+        for year in tab_years:
+            nb_man += self.get_number_of_("M", year, country, continent)
+            nb_woman += self.get_number_of_("F", year, country, continent)
+
+        bars = []
+        bars.append(go.Bar(name="Nombre d'homme", x=["Homme"], y=[nb_man]))
+        bars.append(go.Bar(name="NUmber de femme", x=["Femme"], y=[nb_woman]))
 
         fig = go.Figure(data=bars)
 
         fig.update_layout(
             barmode='stack',
-            xaxis_title="Répartition Homme Femme", yaxis_title="%",
+            xaxis_title="Nombre de participant Homme Femme", yaxis_title="",
             title="",
             showlegend=False
         )
@@ -304,4 +340,64 @@ class JO:
     def get_fig_participants(self, years=None, continent=None):
         l_country = self.get_list_country(years, continent)
         l_nocs = self.get_noc_of_list_country(l_country)
-        
+
+        bars = []
+        for noc in l_nocs:
+            participant = self.get_number_participant(years, noc)
+            bars.append(
+                go.Bar(name=self.get_country_of_noc(noc), y=[
+                       participant], x=[self.get_country_of_noc(noc)])
+            )
+
+        fig = go.Figure(data=bars)
+
+        fig.update_layout(
+            xaxis_title="Nombre de participant par pays",
+            showlegend=False,
+        )
+        return fig
+
+    def get_fig_repartition_sports(self, years=None, country=None, continent=None):
+
+        data = self.data
+        if years is not None:
+            data = data[data["Year"].isin(years)]
+
+        if country is not None:
+            data = data[data["NOC"] == self.get_noc_of_country(country)]
+        elif continent is not None:
+            data = data[data["NOC"].isin(self.get_noc_of_list_country(
+                self.get_list_country(years, continent)))]
+
+        men_data = data[data['Sex'] == 'M']
+        women_data = data[data['Sex'] == 'F']
+
+        men_sport_participation = men_data['Sport'].value_counts(
+        ).reset_index()
+        men_sport_participation.columns = ['Sport', "Nombre d'athlètes Homme"]
+
+        women_sport_participation = women_data['Sport'].value_counts(
+        ).reset_index()
+        women_sport_participation.columns = [
+            'Sport', "Nombre d'athlètes Femme"]
+
+        merged_sport_participation = pd.merge(
+            men_sport_participation, women_sport_participation, on='Sport', how='outer').fillna(0)
+
+        bar_chart = go.Figure()
+
+        bar_chart.add_trace(go.Bar(x=merged_sport_participation['Sport'],
+                                   y=merged_sport_participation["Nombre d'athlètes Homme"],
+                                   name='Men'))
+
+        bar_chart.add_trace(go.Bar(x=merged_sport_participation['Sport'],
+                                   y=merged_sport_participation["Nombre d'athlètes Femme"],
+                                   name='Women'))
+
+        bar_chart.update_layout(
+            title="Participation au Sport - Nombre d'athlètes dans chaque sport (Homme et femme)",
+            xaxis=dict(title='Sport'),
+            yaxis=dict(title="Nombre d'Athlètes"),
+            barmode='stack'
+        )
+        return bar_chart

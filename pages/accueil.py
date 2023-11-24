@@ -46,24 +46,41 @@ def section_principale():
     section = html.Section(
         children=[
             html.Div(
-                dcc.Graph(figure=jo_instance.get_repartitition_homme_femme(), config={
+                dcc.Graph(figure=jo_instance.get_repartitition_homme_femme(years=[2012, 2016]), config={
                           'displayModeBar': False}),
                 id="div_graph_repartition_homme_femme"
             ),
             html.Div(
-                dcc.Graph(figure=jo_instance.get_fig_world(),
+                dcc.Graph(figure=jo_instance.get_fig_participants_homme_femme(years=[2012, 2016]), config={
+                          'displayModeBar': False}),
+                id="div_graph_participant_homme_femme"
+            ),
+            html.Div(
+                dcc.Graph(figure=jo_instance.get_fig_world(years=[2012, 2016]),
                           config={'displayModeBar': False}),
                 id="div_graph_world"
             ),
             html.Div(
-                dcc.Graph(figure=jo_instance.get_fig_medals(),
+                dcc.Graph(figure=jo_instance.get_fig_medals(years=[2012, 2016]),
                           config={'displayModeBar': False}),
                 id="div_graph_medals"
             ),
             html.Div(
-                dcc.Graph(figure=jo_instance.get_fig_top_3(),
+                dcc.Graph(figure=jo_instance.get_fig_top_3(years=[2012, 2016]),
                           config={'displayModeBar': False}),
                 id="div_graph_top_3"
+            ),
+            html.Div(
+                dcc.Graph(
+                    figure=jo_instance.get_fig_participants(years=[2012, 2016]),
+                    config={'displayModeBar': False}),
+                id="div_graph_participants"
+            ),
+            html.Div(
+                dcc.Graph(
+                    figure=jo_instance.get_fig_repartition_sports(years=[2012, 2016]),
+                    config={'displayModeBar': False}),
+                id="div_graph_participants_sports"
             ),
         ], id="section_graph"
     )
@@ -78,9 +95,12 @@ layout = html.Div([
 
 @callback(
     Output("div_graph_repartition_homme_femme", "children"),
+    Output("div_graph_participant_homme_femme", "children"),
     Output("div_graph_medals", "children"),
-    Output("div_graph_world","children"),
+    Output("div_graph_world", "children"),
     Output("div_graph_top_3", "children"),
+    Output("div_graph_participants", "children"),
+    Output("div_graph_participants_sports", "children"),
     Output("dropdown_pays", "options"),
     Input("dropdown_continent", "value"),
     Input("dropdown_pays", "value"),
@@ -89,10 +109,25 @@ layout = html.Div([
 def update_graphs(continent, pays, years):
     print("change graph, continent:", continent,
           ", pays :", pays, ", years : ", years)
+
+    graph_repart_h_f = dcc.Graph(figure=jo_instance.get_repartitition_homme_femme(
+        years=years, country=pays, continent=continent), config={'displayModeBar': False})
     
-    graph_repart_h_f = dcc.Graph(figure=jo_instance.get_repartitition_homme_femme(years=years, country=pays, continent=continent), config={'displayModeBar': False})
+    graph_particip_h_f = dcc.Graph(figure=jo_instance.get_fig_participants_homme_femme(
+        years=years, country=pays, continent=continent), config={'displayModeBar': False})
+
+
     l_country = jo_instance.get_list_country(years, continent)
-    graph_medals = dcc.Graph(figure=jo_instance.get_fig_medals(years, pays, continent), config={'displayModeBar': False})
-    graph_world = dcc.Graph(figure=jo_instance.get_fig_world(years, pays, continent))
-    graph_top3 = dcc.Graph(figure=jo_instance.get_fig_top_3(years, continent))
-    return graph_repart_h_f, graph_medals, graph_world, graph_top3, l_country
+    graph_medals = dcc.Graph(figure=jo_instance.get_fig_medals(
+        years, pays, continent), config={'displayModeBar': False})
+    graph_world = dcc.Graph(
+        figure=jo_instance.get_fig_world(years, pays, continent))
+    graph_top3 = dcc.Graph(figure=jo_instance.get_fig_top_3(
+        years, continent), config={'displayModeBar': False})
+    graph_participants = dcc.Graph(figure=jo_instance.get_fig_participants(
+        years, continent), config={'displayModeBar': False})
+    
+    graph_participant_sport = dcc.Graph(figure=jo_instance.get_fig_repartition_sports(
+        years, pays, continent), config={'displayModeBar': False})
+
+    return graph_repart_h_f, graph_particip_h_f, graph_medals, graph_world, graph_top3, graph_participants, graph_participant_sport, l_country
