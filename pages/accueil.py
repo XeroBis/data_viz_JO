@@ -1,5 +1,6 @@
 from dash import html, callback, Input, Output
 from dash import dcc
+import time
 
 from utils.graph import JO
 jo_instance = JO()
@@ -32,9 +33,22 @@ def section_top():
                         ],
                         id="div_dropdown_pays"
                     ),
+                    html.Div(
+                        children=[
+                            "",
+                            dcc.Loading(
+                                type="circle",
+                                id="",
+                                children=[
+                                    html.Div(html.Div(id="loading_output"))
+                                ],
+                            ),],
+                        id="div_loading",
+                    ),
                 ],
                 id="section_parametrage"
             ),
+
         ]
 
     )
@@ -45,6 +59,7 @@ def section_principale():
 
     section = html.Section(
         children=[
+
             html.Div(
                 dcc.Graph(figure=jo_instance.get_repartitition_homme_femme(years=[2012, 2016]), config={
                           'displayModeBar': False}),
@@ -72,16 +87,26 @@ def section_principale():
             ),
             html.Div(
                 dcc.Graph(
-                    figure=jo_instance.get_fig_participants(years=[2012, 2016]),
+                    figure=jo_instance.get_fig_participants(
+                        years=[2012, 2016]),
                     config={'displayModeBar': False}),
                 id="div_graph_participants"
             ),
             html.Div(
                 dcc.Graph(
-                    figure=jo_instance.get_fig_repartition_sports(years=[2012, 2016]),
+                    figure=jo_instance.get_fig_repartition_sports(
+                        years=[2012, 2016]),
                     config={'displayModeBar': False}),
                 id="div_graph_participants_sports"
             ),
+            html.Div(
+                dcc.Graph(
+                    figure=jo_instance.get_fig_age_sports(
+                        years=[2012, 2016]),
+                    config={'displayModeBar': False}),
+                id="div_graph_age_sports"
+            ),
+
         ], id="section_graph"
     )
     return section
@@ -101,7 +126,9 @@ layout = html.Div([
     Output("div_graph_top_3", "children"),
     Output("div_graph_participants", "children"),
     Output("div_graph_participants_sports", "children"),
+    Output("div_graph_age_sports", "children"),
     Output("dropdown_pays", "options"),
+    Output("loading_output", "children"),
     Input("dropdown_continent", "value"),
     Input("dropdown_pays", "value"),
     Input("slider_year", "value")
@@ -109,25 +136,55 @@ layout = html.Div([
 def update_graphs(continent, pays, years):
     print("change graph, continent:", continent,
           ", pays :", pays, ", years : ", years)
-
+    start_time = time.time()
     graph_repart_h_f = dcc.Graph(figure=jo_instance.get_repartitition_homme_femme(
         years=years, country=pays, continent=continent), config={'displayModeBar': False})
-    
+    print("func : graph repart--- %s seconds ---" %
+          (time.time() - start_time))
+    start_time = time.time()
+
     graph_particip_h_f = dcc.Graph(figure=jo_instance.get_fig_participants_homme_femme(
         years=years, country=pays, continent=continent), config={'displayModeBar': False})
-
+    print("func : particip h f --- %s seconds ---" %
+          (time.time() - start_time))
+    start_time = time.time()
 
     l_country = jo_instance.get_list_country(years, continent)
+    print("func : list country--- %s seconds ---" %
+          (time.time() - start_time))
+    start_time = time.time()
+
     graph_medals = dcc.Graph(figure=jo_instance.get_fig_medals(
         years, pays, continent), config={'displayModeBar': False})
+    print("func : graph medals --- %s seconds ---" %
+          (time.time() - start_time))
+    start_time = time.time()
+
     graph_world = dcc.Graph(
         figure=jo_instance.get_fig_world(years, pays, continent))
+    print("func : graph world--- %s seconds ---" %
+          (time.time() - start_time))
+    start_time = time.time()
+
     graph_top3 = dcc.Graph(figure=jo_instance.get_fig_top_3(
         years, continent), config={'displayModeBar': False})
+    print("func : graph top3--- %s seconds ---" %
+          (time.time() - start_time))
+    start_time = time.time()
+
     graph_participants = dcc.Graph(figure=jo_instance.get_fig_participants(
         years, continent), config={'displayModeBar': False})
-    
+    print("func : graph participant--- %s seconds ---" %
+          (time.time() - start_time))
+    start_time = time.time()
+
     graph_participant_sport = dcc.Graph(figure=jo_instance.get_fig_repartition_sports(
         years, pays, continent), config={'displayModeBar': False})
+    print("func : graph particpant sports--- %s seconds ---" %
+          (time.time() - start_time))
 
-    return graph_repart_h_f, graph_particip_h_f, graph_medals, graph_world, graph_top3, graph_participants, graph_participant_sport, l_country
+    graph_age_sport = dcc.Graph(figure=jo_instance.get_fig_age_sports(
+        years, pays, continent), config={'displayModeBar': False})
+
+    print("loading fini")
+    return graph_repart_h_f, graph_particip_h_f, graph_medals, graph_world, graph_top3, graph_participants, graph_participant_sport, graph_age_sport, l_country, []

@@ -110,7 +110,7 @@ class JO:
     ##### GRAPH #####
     #################
 
-    # Répartition H-F #
+
     def get_repartitition_homme_femme(self, years=None, country=None, continent=None):
         nb_man = 0
         nb_woman = 0
@@ -179,20 +179,15 @@ class JO:
         else:
             tab_years = range(1896, 2020, 4)
 
-        df_medal = pd.DataFrame()
-        for year in tab_years:
-            df_medal = pd.concat(
-                [self.data[self.data["Year"] == year], df_medal])
-        if noc is not None:
-            df_medal = df_medal[df_medal["NOC"] == noc]
-        res = {"Or": 0, "Argent": 0, "Bronze": 0}
-        # df_medal.to_csv("data/test_france.csv")
-        df_medal = df_medal.groupby(
-            ["Event", "Medal"], as_index=False).agg("count")
+        df_medal = pd.read_csv("data/medals.csv", index_col=0)
+        df_medal = df_medal[df_medal["year"].isin(tab_years)]
 
-        res["Or"] = len(df_medal[df_medal["Medal"] == "Gold"])
-        res["Argent"] = len(df_medal[df_medal["Medal"] == "Silver"])
-        res["Bronze"] = len(df_medal[df_medal["Medal"] == "Bronze"])
+        if noc is not None:
+            df_medal = df_medal[df_medal["noc"] == noc]
+        res = {}
+        res["Or"] = df_medal["or"].sum()
+        res["Argent"] = df_medal["argent"].sum()
+        res["Bronze"] = df_medal["bronze"].sum()
         return res
 
     def get_fig_medals(self, years=None, country=None, continent=None):
@@ -238,64 +233,22 @@ class JO:
         return fig
 
     def get_fig_top_3(self, years=None, continent=None):
-        res = {
-            "1": {"country": "", "Or": 0, "Argent": 0, "Bronze": 0},
-            "2": {"country": "", "Or": 0, "Argent": 0, "Bronze": 0},
-            "3": {"country": "", "Or": 0, "Argent": 0, "Bronze": 0}
-        }
-        l_country = self.get_list_country(years, continent)
-        l_nocs = self.get_noc_of_list_country(l_country)
-        for noc in l_nocs:
-            id_to_change = 0
-            check_argent = False
-            check_bronze = False
-            medals = self.get_medals(years, noc)
-            if medals["Or"] >= res["1"]["Or"]:
-                id_to_change = 1
-                check_argent = medals["Or"] == res["1"]["Or"]
-            elif medals["Or"] >= res["2"]["Or"]:
-                id_to_change = 2
-                check_argent = medals["Or"] == res["2"]["Or"]
+        if years is not None:
+            if years[0] == years[1]:
+                tab_years = [years[0]]
+            else:
+                tab_years = range(years[0], years[1]+4, 4)
+        else:
+            tab_years = range(1896, 2020, 4)
 
-            elif medals["Or"] >= res["3"]["Or"]:
-                id_to_change = 3
-                check_argent = medals["Or"] == res["3"]["Or"]
+        df_medals = pd.read_csv("data/medals.csv", index_col=0)
+        df_medals = df_medals[df_medals["year"].isin(tab_years)]
 
-            if check_argent:
-                if medals["Argent"] >= res[str(id_to_change)]["Argent"]:
-                    check_bronze = medals["Argent"] == res[str(
-                        id_to_change)]["Argent"]
+        if continent is not None:
+            df_medals = df_medals[df_medals["continent"] == continent]
 
-            if check_bronze:
-                if medals["Bronze"] < res[str(id_to_change)]["Bronze"]:
-                    id_to_change = id_to_change+1
-
-            if id_to_change == 1:
-                res["3"] = res["2"]
-                res["2"] = res["1"]
-                res["1"] = {
-                    "country": self.get_country_of_noc(noc),
-                    "Or": medals["Or"],
-                    "Argent": medals["Argent"],
-                    "Bronze": medals["Bronze"]
-                }
-
-            if id_to_change == 2:
-                res["3"] = res["2"]
-                res["2"] = {
-                    "country": self.get_country_of_noc(noc),
-                    "Or": medals["Or"],
-                    "Argent": medals["Argent"],
-                    "Bronze": medals["Bronze"]
-                }
-
-            if id_to_change == 3:
-                res["3"] = {
-                    "country": self.get_country_of_noc(noc),
-                    "Or": medals["Or"],
-                    "Argent": medals["Argent"],
-                    "Bronze": medals["Bronze"]
-                }
+        df_medals = df_medals.groupby(["noc"]).agg({'or': "sum", "argent": "sum", "bronze": "sum"}).sort_values(
+            by=["or", "argent", "bronze"], ascending=False)
 
         bars = []
         # marker=dict(color=["#", "#C0C0C0", "#614e1a"])
@@ -306,24 +259,30 @@ class JO:
         bars.append(
             go.Bar(
                 name="Or",
-                x=[res["1"]["country"], res["2"]["country"], res["3"]["country"]],
-                y=[res["1"]["Or"], res["3"]["Or"], res["3"]["Or"]],
+                x=[self.get_country_of_noc(df_medals.iloc[0].name), self.get_country_of_noc(
+                    df_medals.iloc[1].name), self.get_country_of_noc(df_medals.iloc[2].name)],
+                y=[df_medals.iloc[0]["or"], df_medals.iloc[1]
+                    ["or"], df_medals.iloc[2]["or"]],
                 marker_color=colors["Or"]
             )
         )
         bars.append(
             go.Bar(
                 name="Argent",
-                x=[res["1"]["country"], res["2"]["country"], res["3"]["country"]],
-                y=[res["1"]["Argent"], res["2"]["Argent"], res["3"]["Argent"]],
+                x=[self.get_country_of_noc(df_medals.iloc[0].name), self.get_country_of_noc(
+                    df_medals.iloc[1].name), self.get_country_of_noc(df_medals.iloc[2].name)],
+                y=[df_medals.iloc[0]["argent"], df_medals.iloc[1]
+                    ["argent"], df_medals.iloc[2]["argent"]],
                 marker_color=colors["Argent"]
             )
         )
         bars.append(
             go.Bar(
                 name="Bronze",
-                x=[res["1"]["country"], res["2"]["country"], res["3"]["country"]],
-                y=[res["1"]["Bronze"], res["2"]["Bronze"], res["3"]["Bronze"]],
+                x=[self.get_country_of_noc(df_medals.iloc[0].name), self.get_country_of_noc(
+                    df_medals.iloc[1].name), self.get_country_of_noc(df_medals.iloc[2].name)],
+                y=[df_medals.iloc[0]["bronze"], df_medals.iloc[1]
+                    ["bronze"], df_medals.iloc[2]["bronze"]],
                 marker_color=colors["Bronze"]
             )
         )
@@ -345,8 +304,8 @@ class JO:
         for noc in l_nocs:
             participant = self.get_number_participant(years, noc)
             bars.append(
-                go.Bar(name=self.get_country_of_noc(noc), y=[
-                       participant], x=[self.get_country_of_noc(noc)])
+                go.Scatter(name=self.get_country_of_noc(noc), y=[
+                    participant], x=[self.get_country_of_noc(noc)])
             )
 
         fig = go.Figure(data=bars)
@@ -388,11 +347,11 @@ class JO:
 
         bar_chart.add_trace(go.Bar(x=merged_sport_participation['Sport'],
                                    y=merged_sport_participation["Nombre d'athlètes Homme"],
-                                   name='Men'))
+                                   name='Homme'))
 
         bar_chart.add_trace(go.Bar(x=merged_sport_participation['Sport'],
                                    y=merged_sport_participation["Nombre d'athlètes Femme"],
-                                   name='Women'))
+                                   name='Femme'))
 
         bar_chart.update_layout(
             title="Participation au Sport - Nombre d'athlètes dans chaque sport (Homme et femme)",
@@ -401,3 +360,33 @@ class JO:
             barmode='stack'
         )
         return bar_chart
+
+    def get_fig_age_sports(self, years=None, country=None, continent=None):
+        data = self.data
+        if years is not None:
+            data = data[data["Year"].isin(years)]
+
+        if country is not None:
+            data = data[data["NOC"] == self.get_noc_of_country(country)]
+        elif continent is not None:
+            data = data[data["NOC"].isin(
+                self.get_noc_of_list_country(self.get_list_country(continent)))]
+
+        box_traces = []
+        for sport in data['Sport'].unique():
+            sport_data = data[data['Sport'] == sport]
+            box_trace = go.Box(y=sport_data['Age'], name=sport)
+            box_traces.append(box_trace)
+
+        # Creating the layout
+        layout = go.Layout(
+            title="Distribution de l'age des athlètes selon le sport",
+            xaxis=dict(title='Sport'),
+            yaxis=dict(title='Age des athlètes'),
+            showlegend=False,
+        )
+
+        # Creating the figure
+        fig = go.Figure(data=box_traces, layout=layout)
+
+        return fig
