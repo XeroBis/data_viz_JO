@@ -110,7 +110,6 @@ class JO:
     ##### GRAPH #####
     #################
 
-
     def get_repartitition_homme_femme(self, years=None, country=None, continent=None):
         nb_man = 0
         nb_woman = 0
@@ -303,9 +302,10 @@ class JO:
         bars = []
         for noc in l_nocs:
             participant = self.get_number_participant(years, noc)
+            Country = self.get_country_of_noc(noc)
             bars.append(
-                go.Scatter(name=self.get_country_of_noc(noc), y=[
-                    participant], x=[self.get_country_of_noc(noc)])
+                go.Scatter(name=Country, y=[
+                    participant], x=[Country])
             )
 
         fig = go.Figure(data=bars)
@@ -370,7 +370,7 @@ class JO:
             data = data[data["NOC"] == self.get_noc_of_country(country)]
         elif continent is not None:
             data = data[data["NOC"].isin(
-                self.get_noc_of_list_country(self.get_list_country(continent)))]
+                self.get_noc_of_list_country(self.get_list_country(years=years, continent=continent)))]
 
         box_traces = []
         for sport in data['Sport'].unique():
