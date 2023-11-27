@@ -182,7 +182,7 @@ def update_graphs(continent, pays, years):
         years, pays, continent), config={'displayModeBar': False})
     print("func : graph particpant sports--- %s seconds ---" %
           (time.time() - start_time))
-
+    print("continent:", continent)
     graph_age_sport = dcc.Graph(figure=jo_instance.get_fig_age_sports(
         years, pays, continent), config={'displayModeBar': False})
 
