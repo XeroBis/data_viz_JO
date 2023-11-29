@@ -37,9 +37,9 @@ class JO:
 
         list_noc = []
         if years is not None:
-            for year in years:
-                data_2 = self.data[self.data["Year"] == year]
-                list_noc.extend(data_2["NOC"].unique())
+            l_year = [x for x in range(years[0], years[1]+4, 4)]
+            data_2 = self.data[self.data["Year"].isin(l_year)]
+            list_noc.extend(data_2["NOC"].unique())
         else:
             list_noc.extend(self.data["NOC"].unique())
         list_country = []
@@ -98,7 +98,8 @@ class JO:
         if noc is not None:
             data = data[data["NOC"] == noc]
         if years is not None:
-            for year in years:
+            l_year = [x for x in range(years[0], years[1]+4, 4)]
+            for year in l_year:
                 data_temp = data[data["Year"] == year]
                 particpant += len(data_temp["Name"].unique())
         else:
@@ -224,9 +225,10 @@ class JO:
             go.Choropleth(
                 locations=list_region,
                 locationmode="country names",
-                z=[i for i in range(1, len(list_region)+1)],
+                z=[1 for _ in range(1, len(list_region)+1)],
                 colorbar=None,
-                showscale=False
+                showscale=False,
+                colorscale= "Blues",
             )
         )
         return fig
@@ -320,7 +322,11 @@ class JO:
 
         data = self.data
         if years is not None:
-            data = data[data["Year"].isin(years)]
+            if years[0] == years[1]:
+                l_year = years
+            else:
+                l_year = [x for x in range(years[0], years[1]+4, 4)]
+            data = data[data["Year"].isin(l_year)]
 
         if country is not None:
             data = data[data["NOC"] == self.get_noc_of_country(country)]
